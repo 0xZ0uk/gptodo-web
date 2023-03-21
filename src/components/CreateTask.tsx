@@ -20,8 +20,11 @@ const CreateTask: React.FC<ICreateTask> = ({
   const { isSignedIn } = useUser();
   const router = useRouter();
 
-  const onSignInUp = async () => {
-    await router.push("/sign-in/");
+  const onSignInUp: () => void = async () => {
+    router
+      .push("/sign-in/")
+      .then(() => {})
+      .catch((e) => console.log("Error: ", e));
     return;
   };
 

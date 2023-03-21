@@ -10,7 +10,7 @@ import {
   onDescriptionCompletion,
   onSuggestionCompletion,
 } from "~/utils/openai";
-import { CreateCompletionResponseChoicesInner } from "openai";
+import type { CreateCompletionResponseChoicesInner } from "openai";
 
 const Home: NextPage = () => {
   const [inputValue, setInputValue] = React.useState<string>("");
@@ -49,11 +49,16 @@ const Home: NextPage = () => {
     return suggests;
   };
 
-  const handleCompleteSuggestion = async (id: string, completed: boolean) => {
+  const handleCompleteSuggestion: (
+    id: string,
+    completed: boolean
+  ) => void = async (id: string, completed: boolean) => {
     await completeSuggestion.mutateAsync({
       id,
       completed,
     });
+
+    return;
   };
 
   const handleSubmit = async () => {
