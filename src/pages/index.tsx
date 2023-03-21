@@ -10,6 +10,7 @@ import {
   onDescriptionCompletion,
   onSuggestionCompletion,
 } from "~/utils/openai";
+import type { CreateCompletionResponseChoicesInner } from "openai";
 
 const Home: NextPage = () => {
   const [inputValue, setInputValue] = React.useState<string>("");
@@ -61,7 +62,9 @@ const Home: NextPage = () => {
 
       const task = await addTask.mutateAsync({
         task: inputValue,
-        description: ((description as any).text as string)
+        description: (
+          (description as CreateCompletionResponseChoicesInner).text as string
+        )
           .trim()
           .split("\n")[0],
         userId: user.id,
@@ -90,11 +93,13 @@ const Home: NextPage = () => {
           <Header />
           <Tasks
             tasks={tasks.data}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onCompleteSuggestion={handleCompleteSuggestion}
           />
           <CreateTask
             value={inputValue}
             onChangeInput={(value) => setInputValue(value)}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onSubmit={handleSubmit}
           />
         </div>
