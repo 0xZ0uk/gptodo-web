@@ -39,8 +39,8 @@ const Task: React.FC<TaskT> = ({
   suggestions,
   onCompleteSuggestion,
 }) => {
-  const isComplete =
-    suggestions.filter((s) => s.completed).length === suggestions.length;
+  const isComplete = false;
+  // suggestions.filter((s) => s.completed).length === suggestions.length;
 
   return (
     <div
