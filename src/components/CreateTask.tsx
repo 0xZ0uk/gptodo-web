@@ -5,6 +5,7 @@ import { Button } from "./ui/Button";
 import { Input } from "./ui/Input";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
+import { FaPaperPlane } from "react-icons/fa";
 
 interface ICreateTask {
   value?: string;
@@ -37,11 +38,11 @@ const CreateTask: React.FC<ICreateTask> = ({
           />
           <Button
             type="submit"
-            className={cn("font-poppins font-bold", poppins.variable)}
+            className="text-white"
             onClick={onSubmit}
             disabled={value === undefined}
           >
-            Start
+            <FaPaperPlane />
           </Button>
         </div>
       ) : (
