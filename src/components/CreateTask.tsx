@@ -20,10 +20,10 @@ const CreateTask: React.FC<ICreateTask> = ({
   const { isSignedIn } = useUser();
   const router = useRouter();
 
-  const onSignInUp = () => {
-    router.push("/sign-in/")
+  const onSignInUp = async () => {
+    await router.push("/sign-in/");
     return;
-  }
+  };
 
   return (
     <div id="input-area" className="h-16 border-t-2 py-2">

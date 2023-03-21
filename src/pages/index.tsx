@@ -10,6 +10,7 @@ import {
   onDescriptionCompletion,
   onSuggestionCompletion,
 } from "~/utils/openai";
+import { CreateCompletionResponseChoicesInner } from "openai";
 
 const Home: NextPage = () => {
   const [inputValue, setInputValue] = React.useState<string>("");
@@ -57,16 +58,16 @@ const Home: NextPage = () => {
 
   const handleSubmit = async () => {
     if (!!user) {
-      const description = await handleCreateDescription(inputValue);
+      const completion = await handleCreateDescription(inputValue);
 
       const task = await addTask.mutateAsync({
         task: inputValue,
-        description: ((description as any).text as string)
-          .trim()
-          .split("\n")[0],
+        description:
+          (completion as CreateCompletionResponseChoicesInner).text
+            ?.trim()
+            .split("\n")[0] || "",
         userId: user.id,
       });
-
       const suggestionsCompletions = await handleCreateSuggestions(task.task);
 
       await addSuggestions.mutateAsync({

@@ -1,4 +1,4 @@
-import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
+import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
   organization: "org-RzcMAmr34nzpyF4NoVkWj9xF",

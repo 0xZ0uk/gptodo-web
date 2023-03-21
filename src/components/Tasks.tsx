@@ -33,7 +33,6 @@ export interface TaskT extends TaskType {
 }
 
 const Task: React.FC<TaskT> = ({
-  id,
   task: name,
   priority,
   description,
