@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { type NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
@@ -10,7 +11,6 @@ import {
   onDescriptionCompletion,
   onSuggestionCompletion,
 } from "~/utils/openai";
-import type { CreateCompletionResponseChoicesInner } from "openai";
 
 const Home: NextPage = () => {
   const [inputValue, setInputValue] = React.useState<string>("");
@@ -64,11 +64,8 @@ const Home: NextPage = () => {
 
       const task = await addTask.mutateAsync({
         task: inputValue,
-        description: (
-          (completion as CreateCompletionResponseChoicesInner).text as string
-        )
-          .trim()
-          .split("\n")[0],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        description: ((completion as any).text as string).trim().split("\n")[0],
         userId: user.id,
       });
       const suggestionsCompletions = await handleCreateSuggestions(task.task);
