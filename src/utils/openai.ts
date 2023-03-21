@@ -1,4 +1,9 @@
-import { Configuration, OpenAIApi } from "openai";
+import {
+  type ChatCompletionRequestMessage,
+  Configuration,
+  OpenAIApi,
+  ChatCompletionRequestMessageRoleEnum,
+} from "openai";
 
 const configuration = new Configuration({
   organization: "org-RzcMAmr34nzpyF4NoVkWj9xF",
@@ -7,41 +12,62 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-export const onSuggestionCompletion = async (task: string) => {
-  try {
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: `Please break down the following task into 3 smaller, manageable steps:\nTask: ${task}\nSteps:\n`,
-      max_tokens: 100,
-      n: 1,
-      stop: null,
-      temperature: 0.8,
-    });
+export const onChatCompletion = async (
+  messages: ChatCompletionRequestMessage[]
+) =>
+  await openai.createChatCompletion({
+    messages,
+    model: "gpt-3.5-turbo",
+  });
 
-    const steps = response.data.choices[0]?.text?.trim().split("\n");
-    return steps;
-  } catch (error) {
-    console.error("Error:", error);
-    return [];
+const extractFunctionAndMessage: (str: string) => {
+  action: string;
+  msg: string;
+} = (str: string) => {
+  const regex = /Function:\s*([\w]+\([^)]*\))\s*\n\s*Message:\s*([\s\S]+)/;
+  const match = str.match(regex);
+
+  if (match) {
+    return {
+      action: match[1] || "",
+      msg: match[2] || "",
+    };
+  } else {
+    return {
+      action: "",
+      msg: str,
+    };
   }
 };
 
-export const onDescriptionCompletion = async (task: string) => {
-  try {
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: `Please create a description, smaller than 255 characters, for the following task: ${task}`,
-      max_tokens: 100,
-      n: 1,
-      stop: null,
-      temperature: 0.8,
-    });
+export const onParseChatMessage: (message: ChatCompletionRequestMessage) => {
+  role: ChatCompletionRequestMessageRoleEnum;
+  action: string;
+  msg: string;
+} = (message: ChatCompletionRequestMessage) => {
+  const functionMsg = extractFunctionAndMessage(message.content);
 
-    return response.data.choices[0];
-  } catch (error) {
-    console.error("Error:", error);
-    return [];
-  }
+  return {
+    role: message.role,
+    ...functionMsg,
+  };
 };
 
-export default openai;
+export const onParseChatMessageAction: (action: string) => {
+  type: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  payload: string[];
+} = (action) => {
+  // "Dog Walking", "Walk the dog for 30 minutes."
+  const actionType = action.split("(")[0];
+  const actionPayload = action
+    .split("(")[1]
+    .replace(")", "")
+    .split(",")
+    .map((p) => p.toString());
+
+  return {
+    type: actionType,
+    payload: actionPayload,
+  };
+};
