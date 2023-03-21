@@ -7,7 +7,7 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-export const useSuggestionCompletion = async (task: string) => {
+export const onSuggestionCompletion = async (task: string) => {
   try {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
@@ -26,7 +26,7 @@ export const useSuggestionCompletion = async (task: string) => {
   }
 };
 
-export const useDescriptionCompletion = async (task: string) => {
+export const onDescriptionCompletion = async (task: string) => {
   try {
     const response = await openai.createCompletion({
       model: "text-davinci-003",

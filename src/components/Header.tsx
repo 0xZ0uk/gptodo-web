@@ -5,9 +5,7 @@ import { cn } from "~/utils/cn";
 import { poppins } from "~/utils/fonts";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 
-interface IHeader {}
-
-const Header: React.FC<IHeader> = () => {
+const Header = () => {
   const { isSignedIn } = useUser();
 
   return (

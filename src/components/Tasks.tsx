@@ -1,4 +1,4 @@
-import { Suggestion as TSuggestion, Task as TTask } from "@prisma/client";
+import type { Suggestion as TSuggestion, Task as TTask } from "@prisma/client";
 import React from "react";
 import { cn } from "~/utils/cn";
 import { poppins } from "~/utils/fonts";
@@ -74,7 +74,7 @@ const Task: React.FC<TaskT> = ({
       <p className="mb-2 text-sm text-stone-600">{description}</p>
       <div className="flex flex-col gap-2">
         {suggestions?.map((s) => (
-          <Suggestion {...s} onComplete={onCompleteSuggestion} />
+          <Suggestion key={s.id} {...s} onComplete={onCompleteSuggestion} />
         ))}
       </div>
     </div>
@@ -93,7 +93,13 @@ const Tasks: React.FC<TasksProps> = ({ tasks, onCompleteSuggestion }) => {
       className="flex h-full flex-col gap-4 overflow-y-auto py-4"
     >
       {tasks?.map((task: TaskType) => {
-        return <Task {...task} onCompleteSuggestion={onCompleteSuggestion} />;
+        return (
+          <Task
+            {...task}
+            key={task.id}
+            onCompleteSuggestion={onCompleteSuggestion}
+          />
+        );
       })}
     </div>
   );

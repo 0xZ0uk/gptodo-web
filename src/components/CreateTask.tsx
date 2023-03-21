@@ -20,6 +20,11 @@ const CreateTask: React.FC<ICreateTask> = ({
   const { isSignedIn } = useUser();
   const router = useRouter();
 
+  const onSignInUp = () => {
+    router.push("/sign-in/")
+    return;
+  }
+
   return (
     <div id="input-area" className="h-16 border-t-2 py-2">
       {isSignedIn ? (
@@ -44,7 +49,7 @@ const CreateTask: React.FC<ICreateTask> = ({
           <Button
             type="submit"
             className={cn("w-full font-poppins font-bold", poppins.variable)}
-            onClick={() => router.push("/sign-in/")}
+            onClick={onSignInUp}
           >
             Sign In/Sign Up
           </Button>
