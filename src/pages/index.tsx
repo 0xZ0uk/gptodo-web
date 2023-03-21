@@ -54,22 +54,23 @@ const Home: NextPage = () => {
       id,
       completed,
     });
+
+    return;
   };
 
   const handleSubmit = async () => {
     if (!!user) {
-      const description = await handleCreateDescription(inputValue);
+      const completion = await handleCreateDescription(inputValue);
 
       const task = await addTask.mutateAsync({
         task: inputValue,
         description: (
-          (description as CreateCompletionResponseChoicesInner).text as string
+          (completion as CreateCompletionResponseChoicesInner).text as string
         )
           .trim()
           .split("\n")[0],
         userId: user.id,
       });
-
       const suggestionsCompletions = await handleCreateSuggestions(task.task);
 
       await addSuggestions.mutateAsync({
