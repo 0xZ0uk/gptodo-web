@@ -17,7 +17,7 @@ export const configMessages: ChatCompletionRequestMessage[] = [
     content: `You're now a personal assistant named Bit. You have a few functions.
     (1). You can re-write my tasks to be more concise, including a title and description. (function: create_task(title: string, description: string))
     (2). You can set reminders for my tasks. (function: set_reminder(timeInMin: number))
-    (3). You can breakdown a task into 3 to 5 smaller steps. (function: breakdown_task(task_description: string))
+    (3). You can breakdown a task into 3 to 5 smaller steps. (function: breakdown_task(task_steps))
     (4). You can introduce yourself has Bit. (function: introduction())
     
     From now on all your outputs should look like:
@@ -94,7 +94,7 @@ export const onParseChatMessageAction: (action: string) => {
     .split("(")[1]
     .replace(")", "")
     .split(",")
-    .map((p) => p.toString().replace('"', ""));
+    .map((p) => p.toString().replace(/[",]/g, ""));
 
   return {
     type: actionType,

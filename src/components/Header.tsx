@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import React from "react";
 import { useUser } from "@clerk/nextjs";
 import { cn } from "~/utils/cn";
@@ -14,7 +13,7 @@ const Header = () => {
   return (
     <div
       id="header"
-      className="flex h-fit w-full items-end justify-between border-b-2 py-2"
+      className="flex h-fit w-full items-center justify-between border-b-2 py-2"
     >
       <div className="flex gap-2 uppercase">
         <Link
