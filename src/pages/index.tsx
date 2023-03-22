@@ -1,25 +1,48 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { type NextPage } from "next";
-import Head from "next/head";
 import { api } from "~/utils/api";
-import Header from "~/components/Header";
 import CreateTask from "~/components/CreateTask";
-import Tasks from "~/components/Tasks";
 import { useUser } from "@clerk/nextjs";
 import React from "react";
+import type {
+  ChatCompletionRequestMessageRoleEnum,
+  ChatCompletionRequestMessage,
+} from "openai";
 import {
-  onDescriptionCompletion,
-  onSuggestionCompletion,
+  onChatCompletion,
+  onParseChatMessage,
+  onParseChatMessageAction,
 } from "~/utils/openai";
+import Bubble from "~/components/Chat/Bubble";
+import Layout from "~/components/Layout";
+import useChatStore from "~/utils/stores";
+import SkeletonBubble from "~/components/Chat/SkeletonBubble";
 
-const Home: NextPage = () => {
-  const [inputValue, setInputValue] = React.useState<string>("");
+const Chat: NextPage = () => {
+  const {
+    chat,
+    input,
+    loading,
+    onInputChange,
+    onAddMessage,
+    onClearChat,
+    onToggleLoading,
+  } = useChatStore();
 
+  // Adds new message to chat state
+  const handleAddMessage = async (
+    newMessages: ChatCompletionRequestMessage[],
+    callback?: () => Promise<void>
+  ) => {
+    onAddMessage(newMessages);
+    callback && (await callback());
+  };
+
+  // API Context Utils
   const utils = api.useContext();
-
   const { user } = useUser();
 
-  const tasks = api.tasks.getAll.useQuery({ userId: user?.id || "" });
+  // TRPC Utils
 
   const addTask = api.tasks.create.useMutation({
     async onSuccess() {
@@ -27,83 +50,80 @@ const Home: NextPage = () => {
     },
   });
 
-  const addSuggestions = api.tasks.createSuggestions.useMutation({
-    async onSuccess() {
-      await utils.tasks.getAll.invalidate();
-    },
-  });
-
-  const completeSuggestion = api.tasks.completeSuggestion.useMutation({
-    async onSuccess() {
-      await utils.tasks.getAll.invalidate();
-    },
-  });
-
-  const handleCreateDescription = async (task: string) => {
-    return await onDescriptionCompletion(task);
-  };
-
-  const handleCreateSuggestions = async (task: string) => {
-    const suggests = await onSuggestionCompletion(task);
-
-    return suggests;
-  };
-
-  const handleCompleteSuggestion = async (id: string, completed: boolean) => {
-    await completeSuggestion.mutateAsync({
-      id,
-      completed,
-    });
-
-    return;
-  };
-
-  const handleSubmit = async () => {
-    if (!!user) {
-      const completion = await handleCreateDescription(inputValue);
-
-      const task = await addTask.mutateAsync({
-        task: inputValue,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        description: ((completion as any).text as string).trim().split("\n")[0],
-        userId: user.id,
-      });
-      const suggestionsCompletions = await handleCreateSuggestions(task.task);
-
-      await addSuggestions.mutateAsync({
-        tasks: suggestionsCompletions || [],
-        taskId: task.id,
-      });
-
-      setInputValue("");
+  const handleActions = async (action: { type: string; payload: string[] }) => {
+    switch (action.type) {
+      case "create_task":
+        await addTask.mutateAsync({
+          task: action.payload[0],
+          description: action.payload[1],
+          userId: user.id,
+        });
+        console.log("task created");
+        break;
+      default:
+        break;
     }
   };
 
+  // Handle 'Submit' click
+  const handleSubmit = async () => {
+    await handleAddMessage([{ role: "user", content: input }], async () => {
+      onToggleLoading(true);
+      const response = await onChatCompletion([
+        ...chat,
+        { role: "user", content: input },
+      ]).then(async (res) => {
+        await handleAddMessage([
+          {
+            role: res.data.choices[0].message.role,
+            content: res.data.choices[0].message.content,
+          },
+        ]);
+        onToggleLoading(false);
+        return res;
+      });
+
+      const action = onParseChatMessageAction(
+        onParseChatMessage(response.data.choices[0].message).action
+      );
+
+      await handleActions(action);
+    });
+  };
+
   return (
-    <>
-      <Head>
-        <title>BitTask</title>
-        <meta name="description" content="Achievable tasks." />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main className="flex h-screen w-screen justify-center overflow-hidden bg-black">
-        <div className="m-4 flex w-full flex-col rounded-md bg-white p-4">
-          <Header />
-          <Tasks
-            tasks={tasks.data}
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onCompleteSuggestion={handleCompleteSuggestion}
+    <Layout
+      name="Chat"
+      footer={
+        <CreateTask
+          value={input}
+          onChangeInput={(value) => onInputChange(value)}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onSubmit={handleSubmit}
+        />
+      }
+    >
+      <div className="flex h-full flex-col gap-4 overflow-y-auto py-4">
+        {chat.slice(1).map((msg: ChatCompletionRequestMessage, i) => (
+          <Bubble
+            key={i}
+            text={
+              msg.role === "assistant"
+                ? onParseChatMessage(msg).msg
+                : msg.content
+            }
+            type={
+              msg.role as Exclude<
+                ChatCompletionRequestMessageRoleEnum,
+                "system"
+              >
+            }
           />
-          <CreateTask
-            value={inputValue}
-            onChangeInput={(value) => setInputValue(value)}
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onSubmit={handleSubmit}
-          />
-        </div>
-      </main>
-    </>
+        ))}
+        {loading && <SkeletonBubble />}
+      </div>
+    </Layout>
   );
 };
 
-export default Home;
+export default Chat;
