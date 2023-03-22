@@ -9,23 +9,21 @@ import type {
   ChatCompletionRequestMessage,
 } from "openai";
 import {
-  configMessages,
   onChatCompletion,
   onParseChatMessage,
   onParseChatMessageAction,
 } from "~/utils/openai";
 import Bubble from "~/components/Chat/Bubble";
 import Layout from "~/components/Layout";
+import useChatStore from "~/utils/stores";
 
 const Chat: NextPage = () => {
-  const [inputValue, setInputValue] = React.useState<string>("");
-  const [chat, setChat] = React.useState<ChatCompletionRequestMessage[]>([
-    ...configMessages,
-  ]);
+  const { chat, input, onInputChange, onAddMessage, onClearChat } =
+    useChatStore();
 
   // Adds new message to chat state
   const handleAddMessage = (newMessages: ChatCompletionRequestMessage[]) => {
-    setChat([...chat, ...newMessages]);
+    onAddMessage(newMessages);
   };
 
   // API Context Utils
@@ -59,10 +57,10 @@ const Chat: NextPage = () => {
   const handleSubmit = async () => {
     const response = await onChatCompletion([
       ...chat,
-      { role: "user", content: inputValue },
+      { role: "user", content: input },
     ]).then((res) => {
       handleAddMessage([
-        { role: "user", content: inputValue },
+        { role: "user", content: input },
         {
           role: res.data.choices[0].message.role,
           content: res.data.choices[0].message.content,
@@ -84,8 +82,8 @@ const Chat: NextPage = () => {
       name="Chat"
       footer={
         <CreateTask
-          value={inputValue}
-          onChangeInput={(value) => setInputValue(value)}
+          value={input}
+          onChangeInput={(value) => onInputChange(value)}
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={handleSubmit}
         />
