@@ -4,6 +4,7 @@ import { cn } from "~/utils/cn";
 import { poppins } from "~/utils/fonts";
 import Suggestion from "./Suggestion";
 import TaskContextMenu from "./TaskContextMenu";
+import TaskSubItem from "./TaskSubItem";
 
 export type TaskType = TTask & { suggestions: TSuggestion[] };
 
@@ -23,30 +24,40 @@ const Task: React.FC<TaskT> = ({
   // suggestions.filter((s) => s.completed).length === suggestions.length;
 
   return (
-    <div
-      className={cn(
-        "h-fit rounded-md border py-2 px-4 font-poppins",
-        poppins.variable
-      )}
+    <TaskContextMenu
+      id={id}
+      task={description}
+      hasSuggestions={suggestions.length > 0}
     >
-      <div className="flex h-fit items-center justify-between">
-        <h1
-          className={cn(
-            "text-lg font-bold",
-            isComplete && "text-stone-500 line-through"
-          )}
-        >
-          {name}
-        </h1>
-        <TaskContextMenu id={id} />
+      <div
+        className={cn(
+          "h-fit rounded-md border py-2 px-4 font-poppins",
+          poppins.variable
+        )}
+      >
+        <div className="flex h-fit items-center justify-between">
+          <h1
+            className={cn(
+              "text-lg font-bold",
+              isComplete && "text-stone-500 line-through"
+            )}
+          >
+            {name}
+          </h1>
+        </div>
+        <p className="mb-2 text-sm text-stone-600">{description}</p>
+        <div className="flex flex-col gap-2">
+          {suggestions?.map((s) => (
+            <TaskSubItem
+              key={s.id}
+              text={s.name}
+              complete={s.completed}
+              id={s.id}
+            />
+          ))}
+        </div>
       </div>
-      <p className="mb-2 text-sm text-stone-600">{description}</p>
-      <div className="flex flex-col gap-2">
-        {suggestions?.map((s) => (
-          <Suggestion key={s.id} {...s} onComplete={onCompleteSuggestion} />
-        ))}
-      </div>
-    </div>
+    </TaskContextMenu>
   );
 };
 
