@@ -4,6 +4,8 @@ import React from "react";
 import { cn } from "~/utils/cn";
 import { poppins } from "~/utils/fonts";
 import Suggestion from "./Suggestion";
+import { RxDotsHorizontal } from "react-icons/rx";
+import TaskContextMenu from "./TaskContextMenu";
 
 export type TaskType = TTask & { suggestions: TSuggestion[] };
 
@@ -37,17 +39,10 @@ const Task: React.FC<TaskT> = ({
         >
           {name}
         </h1>
-        <p
-          className={cn(
-            "flex h-6 w-6 items-center justify-center rounded-full font-bold text-white",
-            priority === 1 && "bg-red-500",
-            priority === 2 && "bg-yellow-300",
-            priority === 3 && "bg-green-500",
-            priority > 3 && "bg-stone-200"
-          )}
-        >
-          {priority}
-        </p>
+        <TaskContextMenu
+          onDelete={() => console.log("delete")}
+          onEdit={() => console.log("edit")}
+        />
       </div>
       <p className="mb-2 text-sm text-stone-600">{description}</p>
       <div className="flex flex-col gap-2">
