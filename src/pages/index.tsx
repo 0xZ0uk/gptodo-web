@@ -16,10 +16,18 @@ import {
 import Bubble from "~/components/Chat/Bubble";
 import Layout from "~/components/Layout";
 import useChatStore from "~/utils/stores";
+import SkeletonBubble from "~/components/Chat/SkeletonBubble";
 
 const Chat: NextPage = () => {
-  const { chat, input, onInputChange, onAddMessage, onClearChat } =
-    useChatStore();
+  const {
+    chat,
+    input,
+    loading,
+    onInputChange,
+    onAddMessage,
+    onClearChat,
+    onToggleLoading,
+  } = useChatStore();
 
   // Adds new message to chat state
   const handleAddMessage = async (
@@ -60,6 +68,7 @@ const Chat: NextPage = () => {
   // Handle 'Submit' click
   const handleSubmit = async () => {
     await handleAddMessage([{ role: "user", content: input }], async () => {
+      onToggleLoading(true);
       const response = await onChatCompletion([
         ...chat,
         { role: "user", content: input },
@@ -70,7 +79,7 @@ const Chat: NextPage = () => {
             content: res.data.choices[0].message.content,
           },
         ]);
-
+        onToggleLoading(false);
         return res;
       });
 
@@ -111,6 +120,7 @@ const Chat: NextPage = () => {
             }
           />
         ))}
+        {loading && <SkeletonBubble />}
       </div>
     </Layout>
   );
