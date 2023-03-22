@@ -9,23 +9,33 @@ import type {
   ChatCompletionRequestMessage,
 } from "openai";
 import {
-  configMessages,
   onChatCompletion,
   onParseChatMessage,
   onParseChatMessageAction,
 } from "~/utils/openai";
 import Bubble from "~/components/Chat/Bubble";
 import Layout from "~/components/Layout";
+import useChatStore from "~/utils/stores";
+import SkeletonBubble from "~/components/Chat/SkeletonBubble";
 
 const Chat: NextPage = () => {
-  const [inputValue, setInputValue] = React.useState<string>("");
-  const [chat, setChat] = React.useState<ChatCompletionRequestMessage[]>([
-    ...configMessages,
-  ]);
+  const {
+    chat,
+    input,
+    loading,
+    onInputChange,
+    onAddMessage,
+    onClearChat,
+    onToggleLoading,
+  } = useChatStore();
 
   // Adds new message to chat state
-  const handleAddMessage = (newMessages: ChatCompletionRequestMessage[]) => {
-    setChat([...chat, ...newMessages]);
+  const handleAddMessage = async (
+    newMessages: ChatCompletionRequestMessage[],
+    callback?: () => Promise<void>
+  ) => {
+    onAddMessage(newMessages);
+    callback && (await callback());
   };
 
   // API Context Utils
@@ -57,26 +67,28 @@ const Chat: NextPage = () => {
 
   // Handle 'Submit' click
   const handleSubmit = async () => {
-    const response = await onChatCompletion([
-      ...chat,
-      { role: "user", content: inputValue },
-    ]).then((res) => {
-      handleAddMessage([
-        { role: "user", content: inputValue },
-        {
-          role: res.data.choices[0].message.role,
-          content: res.data.choices[0].message.content,
-        },
-      ]);
+    await handleAddMessage([{ role: "user", content: input }], async () => {
+      onToggleLoading(true);
+      const response = await onChatCompletion([
+        ...chat,
+        { role: "user", content: input },
+      ]).then(async (res) => {
+        await handleAddMessage([
+          {
+            role: res.data.choices[0].message.role,
+            content: res.data.choices[0].message.content,
+          },
+        ]);
+        onToggleLoading(false);
+        return res;
+      });
 
-      return res;
+      const action = onParseChatMessageAction(
+        onParseChatMessage(response.data.choices[0].message).action
+      );
+
+      await handleActions(action);
     });
-
-    const action = onParseChatMessageAction(
-      onParseChatMessage(response.data.choices[0].message).action
-    );
-
-    await handleActions(action);
   };
 
   return (
@@ -84,8 +96,8 @@ const Chat: NextPage = () => {
       name="Chat"
       footer={
         <CreateTask
-          value={inputValue}
-          onChangeInput={(value) => setInputValue(value)}
+          value={input}
+          onChangeInput={(value) => onInputChange(value)}
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={handleSubmit}
         />
@@ -108,6 +120,7 @@ const Chat: NextPage = () => {
             }
           />
         ))}
+        {loading && <SkeletonBubble />}
       </div>
     </Layout>
   );

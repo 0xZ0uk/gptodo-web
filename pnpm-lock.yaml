@@ -40,6 +40,7 @@ specifiers:
   tailwindcss-animate: ^1.0.5
   typescript: ^4.9.5
   zod: ^3.20.6
+  zustand: ^4.3.6
 
 dependencies:
   '@clerk/nextjs': 4.11.11_ld2jel3hspngo3u5lti2kgl2sq
@@ -65,6 +66,7 @@ dependencies:
   tailwind-merge: 1.10.0
   tailwindcss-animate: 1.0.5_tailwindcss@3.2.7
   zod: 3.21.4
+  zustand: 4.3.6_react@18.2.0
 
 devDependencies:
   '@types/eslint': 8.21.3
@@ -3377,4 +3379,20 @@ packages:
 
   /zod/3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+    dev: false
+
+  /zustand/4.3.6_react@18.2.0:
+    resolution: {integrity: sha512-6J5zDxjxLE+yukC2XZWf/IyWVKnXT9b9HUv09VJ/bwGCpKNcaTqp7Ws28Xr8jnbvnZcdRaidztAPsXFBIqufiw==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      immer: '>=9.0'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
     dev: false

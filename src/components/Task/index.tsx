@@ -1,32 +1,11 @@
 import type { Suggestion as TSuggestion, Task as TTask } from "@prisma/client";
+
 import React from "react";
 import { cn } from "~/utils/cn";
 import { poppins } from "~/utils/fonts";
-import { Checkbox } from "./ui/Checkbox";
+import Suggestion from "./Suggestion";
 
-type TaskType = TTask & { suggestions: TSuggestion[] };
-
-interface SugestionsProps extends TSuggestion {
-  onComplete: (id: string, value: boolean) => void;
-}
-
-const Suggestion: React.FC<SugestionsProps> = ({
-  id,
-  completed,
-  name,
-  onComplete,
-}) => {
-  return (
-    <div className="flex items-start space-x-2 text-stone-500">
-      <Checkbox
-        id={id}
-        checked={completed}
-        onClick={() => onComplete(id, !completed)}
-      />
-      <label className="text-sm font-medium leading-none">{name}</label>
-    </div>
-  );
-};
+export type TaskType = TTask & { suggestions: TSuggestion[] };
 
 export interface TaskT extends TaskType {
   onCompleteSuggestion: (id: string, value: boolean) => void;
@@ -80,28 +59,4 @@ const Task: React.FC<TaskT> = ({
   );
 };
 
-interface TasksProps {
-  tasks?: TaskType[];
-  onCompleteSuggestion: (id: string, value: boolean) => void;
-}
-
-const Tasks: React.FC<TasksProps> = ({ tasks, onCompleteSuggestion }) => {
-  return (
-    <div
-      id="task-area"
-      className="flex h-full flex-col gap-4 overflow-y-auto py-4"
-    >
-      {tasks?.map((task: TaskType) => {
-        return (
-          <Task
-            {...task}
-            key={task.id}
-            onCompleteSuggestion={onCompleteSuggestion}
-          />
-        );
-      })}
-    </div>
-  );
-};
-
-export default Tasks;
+export default Task;
