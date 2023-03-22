@@ -13,25 +13,23 @@ interface ChatState {
 
 const useChatStore = create<ChatState>()(
   devtools(
-    persist(
-      (set) => ({
-        input: "",
-        chat: [...configMessages],
-        onInputChange: (value: string) =>
-          set((state: ChatState) => ({ ...state, input: value })),
-        onAddMessage: (message: ChatCompletionRequestMessage[]) =>
-          set((state: ChatState) => {
-            return { ...state, chat: [...state.chat, ...message] };
-          }),
-        onClearChat: () =>
-          set((state: ChatState) => {
-            return { ...state, chat: [...configMessages] };
-          }, true),
-      }),
-      {
-        name: "chat-storage",
-      }
-    )
+    (set) => ({
+      input: "",
+      chat: [...configMessages],
+      onInputChange: (value: string) =>
+        set((state: ChatState) => ({ ...state, input: value })),
+      onAddMessage: (message: ChatCompletionRequestMessage[]) =>
+        set((state: ChatState) => {
+          return { ...state, chat: [...state.chat, ...message] };
+        }),
+      onClearChat: () =>
+        set((state: ChatState) => {
+          return { ...state, chat: [...configMessages] };
+        }, true),
+    }),
+    {
+      name: "chat-storage",
+    }
   )
 );
 

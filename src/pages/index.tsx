@@ -22,8 +22,12 @@ const Chat: NextPage = () => {
     useChatStore();
 
   // Adds new message to chat state
-  const handleAddMessage = (newMessages: ChatCompletionRequestMessage[]) => {
+  const handleAddMessage = async (
+    newMessages: ChatCompletionRequestMessage[],
+    callback?: () => Promise<void>
+  ) => {
     onAddMessage(newMessages);
+    callback && (await callback());
   };
 
   // API Context Utils
@@ -55,26 +59,27 @@ const Chat: NextPage = () => {
 
   // Handle 'Submit' click
   const handleSubmit = async () => {
-    const response = await onChatCompletion([
-      ...chat,
-      { role: "user", content: input },
-    ]).then((res) => {
-      handleAddMessage([
+    await handleAddMessage([{ role: "user", content: input }], async () => {
+      const response = await onChatCompletion([
+        ...chat,
         { role: "user", content: input },
-        {
-          role: res.data.choices[0].message.role,
-          content: res.data.choices[0].message.content,
-        },
-      ]);
+      ]).then(async (res) => {
+        await handleAddMessage([
+          {
+            role: res.data.choices[0].message.role,
+            content: res.data.choices[0].message.content,
+          },
+        ]);
 
-      return res;
+        return res;
+      });
+
+      const action = onParseChatMessageAction(
+        onParseChatMessage(response.data.choices[0].message).action
+      );
+
+      await handleActions(action);
     });
-
-    const action = onParseChatMessageAction(
-      onParseChatMessage(response.data.choices[0].message).action
-    );
-
-    await handleActions(action);
   };
 
   return (
