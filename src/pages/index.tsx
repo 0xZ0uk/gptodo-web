@@ -17,6 +17,8 @@ import Bubble from "~/components/Chat/Bubble";
 import Layout from "~/components/Layout";
 import useChatStore from "~/utils/stores";
 import SkeletonBubble from "~/components/Chat/SkeletonBubble";
+import Hint from "~/components/Chat/Hint";
+import ClearButton from "~/components/Chat/ClearButton";
 
 const Chat: NextPage = () => {
   const {
@@ -69,6 +71,8 @@ const Chat: NextPage = () => {
   const handleSubmit = async () => {
     await handleAddMessage([{ role: "user", content: input }], async () => {
       onToggleLoading(true);
+
+      onInputChange("");
       const response = await onChatCompletion([
         ...chat,
         { role: "user", content: input },
@@ -98,12 +102,16 @@ const Chat: NextPage = () => {
         <CreateTask
           value={input}
           onChangeInput={(value) => onInputChange(value)}
+          disabled={loading}
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={handleSubmit}
         />
       }
     >
       <div className="flex h-full flex-col gap-4 overflow-y-auto py-4">
+        {chat.length < 3 && (
+          <Hint text="Try telling Bit what you need, write a small description of the task you want created" />
+        )}
         {chat.slice(1).map((msg: ChatCompletionRequestMessage, i) => (
           <Bubble
             key={i}
@@ -121,6 +129,7 @@ const Chat: NextPage = () => {
           />
         ))}
         {loading && <SkeletonBubble />}
+        {!loading && chat.length > 3 && <ClearButton onClick={onClearChat} />}
       </div>
     </Layout>
   );
