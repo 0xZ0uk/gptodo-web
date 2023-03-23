@@ -19,9 +19,9 @@ const Header = () => {
         <Link
           href="/"
           className={cn(
-            "font-poppins font-bold text-stone-400",
+            "font-poppins font-bold text-slate-400",
             poppins.variable,
-            router.asPath === "/" && "text-stone-700"
+            router.asPath === "/" && "text-slate-700"
           )}
         >
           Chat
@@ -29,9 +29,9 @@ const Header = () => {
         <Link
           href="/tasks"
           className={cn(
-            "font-poppins font-bold text-stone-400",
+            "font-poppins font-bold text-slate-400",
             poppins.variable,
-            router.asPath === "/tasks" && "text-stone-700"
+            router.asPath === "/tasks" && "text-slate-700"
           )}
         >
           Tasks

@@ -110,7 +110,7 @@ const Chat: NextPage = () => {
     >
       <div className="flex h-full flex-col gap-4 overflow-y-auto py-4">
         {chat.length < 3 && (
-          <Hint text="Try telling Bit what you need, write a small description of the task you want created" />
+          <Hint text="Try telling Bit what you need. Write a small description of the task you want help with." />
         )}
         {chat.slice(1).map((msg: ChatCompletionRequestMessage, i) => (
           <Bubble
