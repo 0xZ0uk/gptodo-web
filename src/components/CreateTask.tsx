@@ -9,12 +9,14 @@ import { FaPaperPlane } from "react-icons/fa";
 
 interface ICreateTask {
   value?: string;
+  disabled?: boolean;
   onChangeInput: (value: string) => void;
   onSubmit: () => void;
 }
 
 const CreateTask: React.FC<ICreateTask> = ({
   value,
+  disabled = false,
   onChangeInput,
   onSubmit,
 }) => {
@@ -34,13 +36,14 @@ const CreateTask: React.FC<ICreateTask> = ({
             className={cn("font-poppins", poppins.variable)}
             placeholder="Write something todo..."
             value={value}
+            disabled={disabled}
             onChange={(e) => onChangeInput(e.target.value)}
           />
           <Button
             type="submit"
             className="text-white"
             onClick={onSubmit}
-            disabled={value === undefined}
+            disabled={value === undefined || disabled}
           >
             <FaPaperPlane />
           </Button>
