@@ -10,7 +10,7 @@ const Hint: React.FC<HintProps> = ({ text, disabled = false }) => {
   return (
     <div
       className={cn(
-        "mx-auto w-3/4 text-center text-xs text-stone-400 underline",
+        "mx-auto w-3/4 text-center text-xs text-slate-400 underline",
         disabled && "hidden"
       )}
     >

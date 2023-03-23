@@ -39,13 +39,13 @@ const Task: React.FC<TaskT> = ({
           <h1
             className={cn(
               "text-lg font-bold",
-              isComplete && "text-stone-500 line-through"
+              isComplete && "text-slate-500 line-through"
             )}
           >
             {name}
           </h1>
         </div>
-        <p className="mb-2 text-sm text-stone-600">{description}</p>
+        <p className="mb-2 text-sm text-slate-600">{description}</p>
         <div className="flex flex-col gap-2">
           {suggestions?.map((s) => (
             <TaskSubItem

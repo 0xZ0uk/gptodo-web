@@ -7,7 +7,7 @@ interface ClearButtonProps {
 const ClearButton: React.FC<ClearButtonProps> = ({ onClick }) => {
   return (
     <button
-      className="mx-auto w-fit rounded-md border px-4 py-2 text-xs text-stone-500"
+      className="mx-auto w-fit rounded-md border px-4 py-2 text-xs text-slate-500"
       onClick={onClick}
     >
       Clear Chat

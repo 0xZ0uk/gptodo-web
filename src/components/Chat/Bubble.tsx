@@ -13,7 +13,7 @@ const Bubble: React.FC<BubbleProps> = ({ text, type = "assistant" }) => {
       className={cn(
         "rounded-t-md p-4 font-poppins text-sm text-white",
         poppins.variable,
-        type === "assistant" && "rounded-r-md bg-stone-400",
+        type === "assistant" && "rounded-r-md bg-slate-400",
         type === "user" && "rounded-l-md bg-blue-600"
       )}
     >

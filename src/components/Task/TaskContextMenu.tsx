@@ -29,7 +29,7 @@ const TaskContextMenuItem: React.FC<TaskContextMenuItemProps> = ({
   return (
     <ContextMenuItem
       className={cn(
-        "flex gap-2 hover:bg-slate-100 active:bg-slate-100 disabled:text-stone-100",
+        "flex gap-2 hover:bg-slate-100 active:bg-slate-100 disabled:text-slate-100",
         className
       )}
       disabled={disabled}

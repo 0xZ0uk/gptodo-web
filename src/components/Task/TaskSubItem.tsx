@@ -28,7 +28,7 @@ const TaskSubItem: React.FC<TaskSubItemProps> = ({ id, text, complete }) => {
 
   return (
     <div
-      className="flex cursor-pointer items-center space-x-2 rounded-md border p-2 text-stone-500"
+      className="flex cursor-pointer items-center space-x-2 rounded-md border p-2 text-slate-500"
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={handleToggle}
     >

@@ -13,7 +13,7 @@ const Suggestion: React.FC<SugestionsProps> = ({
   onComplete,
 }) => {
   return (
-    <div className="flex items-start space-x-2 text-stone-500">
+    <div className="flex items-start space-x-2 text-slate-500">
       <Checkbox
         id={id}
         checked={completed}
