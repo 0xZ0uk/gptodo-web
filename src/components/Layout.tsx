@@ -48,7 +48,10 @@ const Layout: React.FC<LayoutProps> = ({ name, children, footer }) => {
       <Head>
         <title>BitTask - {name}</title>
         <meta name="description" content="Achievable tasks." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1"
+        />
         <meta charSet="utf-8" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

@@ -5,6 +5,15 @@ import { poppins } from "~/utils/fonts";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "./ui/DropdownMenu";
+import { RxPerson, RxIdCard, RxGear, RxExit } from "react-icons/rx";
 
 const Header = () => {
   const { isSignedIn } = useUser();
@@ -39,10 +48,31 @@ const Header = () => {
       </div>
 
       {isSignedIn && (
-        <Avatar className={cn("font-poppins", poppins.variable)}>
-          <AvatarImage />
-          <AvatarFallback>PS</AvatarFallback>
-        </Avatar>
+        <DropdownMenu>
+          <DropdownMenuTrigger className={cn("font-poppins", poppins.variable)}>
+            <Avatar>
+              <AvatarImage />
+              <AvatarFallback>PS</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className={cn("font-poppins", poppins.variable)}>
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="flex items-center gap-2">
+              <RxPerson /> Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem className="flex items-center gap-2">
+              <RxGear /> Settings
+            </DropdownMenuItem>
+            <DropdownMenuItem className="flex items-center gap-2">
+              <RxIdCard /> Billing
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="flex items-center gap-2 text-red-500">
+              <RxExit /> Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
     </div>
   );
