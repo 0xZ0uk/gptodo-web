@@ -46,7 +46,7 @@ const Layout: React.FC<LayoutProps> = ({ name, children, footer }) => {
   return (
     <>
       <Head>
-        <title>BitTask - {name}</title>
+        <title>BitTask</title>
         <meta name="description" content="Achievable tasks." />
         <meta
           name="viewport"
@@ -57,9 +57,9 @@ const Layout: React.FC<LayoutProps> = ({ name, children, footer }) => {
       </Head>
       <main
         id={name}
-        className="flex h-screen max-h-screen min-h-screen w-screen justify-center overflow-hidden bg-slate-900 "
+        className="h-screen max-h-screen min-h-screen w-screen justify-center overflow-hidden"
       >
-        <div className="m-4 flex w-full flex-col rounded-md bg-slate-50 px-4 py-2 text-slate-900">
+        <div className="flex h-screen w-full flex-col rounded-md bg-slate-50 px-4 py-2 text-slate-900">
           <Header />
           {children}
           {footer}
